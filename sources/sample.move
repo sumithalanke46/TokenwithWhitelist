@@ -4,18 +4,18 @@ module sumitha_addr::TokenWithBlacklist {
     use aptos_framework::aptos_coin::AptosCoin;
     use std::vector;
     
-    /// Struct representing token allowances and blacklist management
+
     struct TokenManager has store, key {
         allowances: vector<Allowance>,     
         blacklisted: vector<address>,      
         owner: address,                    
     }
     
-    /// Struct representing an allowance for delegated transfers
+    
     struct Allowance has store, copy, drop {
-        spender: address,    // Address allowed to spend
-        amount: u64,         // Amount approved for spending
-        owner: address,      // Owner of the tokens
+        spender: address,  
+        amount: u64,         
+        owner: address,     
     }
     public fun initialize_token_manager(owner: &signer) {
         let owner_addr = signer::address_of(owner);
