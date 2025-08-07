@@ -6,9 +6,9 @@ module sumitha_addr::TokenWithBlacklist {
     
     /// Struct representing token allowances and blacklist management
     struct TokenManager has store, key {
-        allowances: vector<Allowance>,     // List of approved allowances
-        blacklisted: vector<address>,      // Blacklisted addresses
-        owner: address,                    // Contract owner
+        allowances: vector<Allowance>,     
+        blacklisted: vector<address>,      
+        owner: address,                    
     }
     
     /// Struct representing an allowance for delegated transfers
@@ -17,8 +17,6 @@ module sumitha_addr::TokenWithBlacklist {
         amount: u64,         // Amount approved for spending
         owner: address,      // Owner of the tokens
     }
-    
-    /// Function to initialize the token manager with blacklist capabilities
     public fun initialize_token_manager(owner: &signer) {
         let owner_addr = signer::address_of(owner);
         let token_manager = TokenManager {
@@ -28,8 +26,6 @@ module sumitha_addr::TokenWithBlacklist {
         };
         move_to(owner, token_manager);
     }
-    
-    /// Function to approve allowance for delegated transfers with blacklist check
     public fun approve_allowance(
         owner: &signer, 
         spender: address, 
@@ -37,8 +33,6 @@ module sumitha_addr::TokenWithBlacklist {
     ) acquires TokenManager {
         let owner_addr = signer::address_of(owner);
         let token_manager = borrow_global_mut<TokenManager>(owner_addr);
-        
-        // Check if spender is blacklisted
         assert!(!vector::contains(&token_manager.blacklisted, &spender), 1);
         
         let new_allowance = Allowance {
@@ -46,8 +40,6 @@ module sumitha_addr::TokenWithBlacklist {
             amount,
             owner: owner_addr,
         };
-        
-        // Remove existing allowance if present
         let i = 0;
         let len = vector::length(&token_manager.allowances);
         while (i < len) {
@@ -58,8 +50,6 @@ module sumitha_addr::TokenWithBlacklist {
             };
             i = i + 1;
         };
-        
-        // Add new allowance
         vector::push_back(&mut token_manager.allowances, new_allowance);
     }
 }
